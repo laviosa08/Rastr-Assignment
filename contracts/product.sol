@@ -22,7 +22,6 @@ contract ProductContract {
     event ProductDeleted(uint256 productId);
     event ProductUpdated(uint256 productId, string newName, uint256 newPrice, string newDetails);
 
- //Can be used in order to make a function executable by only contract owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Only the owner can call this function");
         _;
@@ -50,10 +49,6 @@ contract ProductContract {
         return (product.id, product.name, product.price, product.details);
     }
 
-/**
-    currently optional parameters are not supported in solidity and hence for updating a single property
-    we have to either add individual functions or use update with all the other parameters having previous values.
- */
     function updateProduct(uint256 _productId, string memory _newName, uint256 _newPrice, string memory _newDetails) public onlyOwner {
         require(products[_productId].exists, "Product does not exist");
         
@@ -72,9 +67,21 @@ contract ProductContract {
     }
 
     function getAllProducts() public view returns (Product[] memory) {
-        Product[] memory allProducts = new Product[](productCount);
+        uint256 existingProductsCount = 0;
+
         for (uint256 i = 1; i <= productCount; i++) {
-            allProducts[i - 1] = products[i];
+            if (products[i].exists) {
+                existingProductsCount++;
+            }
+        }
+        Product[] memory allProducts = new Product[](existingProductsCount);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 1; i <= productCount; i++) {
+            if (products[i].exists) {
+                allProducts[currentIndex] = products[i];
+                currentIndex++;
+            }
         }
         return allProducts;
     }
