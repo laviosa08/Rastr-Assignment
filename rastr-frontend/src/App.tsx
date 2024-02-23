@@ -1,13 +1,8 @@
 import React from "react";
-import Container from "@mui/material/Container";
-import Product from "./pages/Product";
+import { ProductPage } from "./ProductPage";
 
 const App: React.FC = () => {
-  return (
-    <Container>
-      <Product />
-    </Container>
-  );
+  return <ProductPage />;
 };
 
 export default App;
